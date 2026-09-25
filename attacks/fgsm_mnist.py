@@ -3,12 +3,11 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 
 from torchvision import datasets, transforms
+
 from torch.utils.data import DataLoader
 
 
-# ============================================================
-# 1. Define the neural network
-# ============================================================
+
 
 class SimpleCNN(nn.Module):
 
@@ -37,12 +36,7 @@ class SimpleCNN(nn.Module):
 
     def forward(self, x):
         return self.network(x)
-
-
-# ============================================================
-# 2. Load the trained model
-# ============================================================
-
+    
 model = SimpleCNN()
 
 model.load_state_dict(
@@ -55,17 +49,18 @@ model.load_state_dict(
 model.eval()
 
 
-# ============================================================
-# 3. Load MNIST test dataset
-# ============================================================
+
 
 transform = transforms.ToTensor()
+
 
 test_dataset = datasets.MNIST(
     root="data",
     train=False,
     download=True,
     transform=transform
+
+
 )
 
 test_loader = DataLoader(
@@ -75,9 +70,7 @@ test_loader = DataLoader(
 )
 
 
-# ============================================================
-# 4. FGSM function
-# ============================================================
+
 
 def fgsm_attack(image, epsilon, gradient):
 
@@ -91,86 +84,40 @@ def fgsm_attack(image, epsilon, gradient):
         1
     )
 
+
     return adversarial_image
-
-
-# ============================================================
-# 5. Select an image
-# ============================================================
-
 image, label = next(iter(test_loader))
-
 image.requires_grad = True
-
-
-# ============================================================
-# 6. Make the original prediction
-# ============================================================
-
 output = model(image)
 
 original_prediction = output.argmax(
     dim=1
 ).item()
-
-
-# ============================================================
-# 7. Calculate the loss
-# ============================================================
-
 loss_function = nn.CrossEntropyLoss()
-
 loss = loss_function(
     output,
     label
 )
-
-
-# ============================================================
-# 8. Calculate gradient
-# ============================================================
-
 model.zero_grad()
 
 loss.backward()
 
 gradient = image.grad.data
-
-
-# ============================================================
-# 9. Create adversarial image
-# ============================================================
-
 epsilon = 0.1
-
 adversarial_image = fgsm_attack(
     image,
     epsilon,
     gradient
 )
-
-
-# ============================================================
-# 10. Make prediction on adversarial image
-# ============================================================
-
 with torch.no_grad():
-
     adversarial_output = model(
         adversarial_image
     )
-
     adversarial_prediction = (
         adversarial_output.argmax(
             dim=1
         ).item()
     )
-
-
-# ============================================================
-# 11. Print results
-# ============================================================
-
 print("--------------------------------")
 print("FGSM ATTACK RESULTS")
 print("--------------------------------")
@@ -188,9 +135,7 @@ print(
     epsilon
 )
 print("--------------------------------")
-# ============================================================
-# 12. Display images
-# ============================================================
+
 
 plt.figure(figsize=(8, 3))
 plt.subplot(1, 2, 1)
@@ -212,7 +157,9 @@ plt.title(
 )
 plt.axis("off")
 plt.tight_layout()
-plt.savefig(
+
+plt.savefig
+(
     "attacks/results/fgsm_result.png"
 )
 plt.show()
