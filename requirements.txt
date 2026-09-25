@@ -6,4 +6,4 @@ python-multipart
 pillow
 numpy
 requests
-matplotlibi
+matplotlib

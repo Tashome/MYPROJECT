@@ -35,12 +35,12 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 app = FastAPI(
-    title="AI Red Team Test API"
+    title="AI API"
 )
 @app.get("/")
 def home():
     return {
-        "message": "AI model API is running"
+        "message": "API is running"
     }
 @app.post("/predict")
 async def predict(
@@ -69,5 +69,5 @@ async def predict(
     return {
         "prediction": prediction,
         "confidence": confidence,
-        "filename": file.filename
+        "file": file.filename
     }

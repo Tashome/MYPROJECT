@@ -82,4 +82,4 @@ torch.save(
     model.state_dict(),
     "model/model.pt"
 )
-print("Model saved to model/model.pt")
+print("Model is saved ")
